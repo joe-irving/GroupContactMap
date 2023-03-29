@@ -3,6 +3,8 @@ layout: none
 ---
 <html>
     <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- Vue Scripts -->
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
@@ -47,9 +49,16 @@ layout: none
                         </select>
                     </div>
                 </form>
+                <div class="groups-count"><span class="group-number">{{ filteredGroups.length }}</span> group<span v-if="filteredGroups.length != 1">s</span>.</div>
             </div>
             <div class="toggle-filters">
-                <label for="toggle-filter-check">TOGGLE FILTERS</label>
+                <label for="toggle-filter-check">
+                    <svg viewBox="0 0 971.986 971.986" style="enable-background:new 0 0 971.986 971.986;">
+	                    <path d="M370.216,459.3c10.2,11.1,15.8,25.6,15.8,40.6v442c0,26.601,32.1,40.101,51.1,21.4l123.3-141.3 c16.5-19.8,25.6-29.601,25.6-49.2V500c0-15,5.7-29.5,15.8-40.601L955.615,75.5c26.5-28.8,6.101-75.5-33.1-75.5h-873 c-39.2,0-59.7,46.6-33.1,75.5L370.216,459.3z"/>
+                    </svg>
+                    
+                </label>
+                <span class="filter-count" v-if="filterCount > 0">{{ filterCount }}</span>
                 <input type="checkbox"id="toggle-filter-check" v-model="showFilters">
             </div>
             <div class="toggle-map">
@@ -57,7 +66,7 @@ layout: none
                 <input type="checkbox" id="toggle-map-check" v-model="showMap">
             </div>
             <div class="map" v-if="showMap">
-
+                MAP!
             </div>
             <div class="directory" :class="{ sidebar: showMap }">
                 <div class="group" v-for="group in filteredGroups">

@@ -60,6 +60,15 @@ let listingApp = createApp({
             return places.filter((place) => {
                 return place.region == this.filters.region.value
             })
+        },
+        filterCount(){
+            let filterCount = 0;
+            for (filterName of Object.keys(this.filters)){
+                if (this.filters[filterName].value){
+                    filterCount += 1;
+                }
+            }
+            return filterCount;
         }
     },
     methods: {
@@ -68,6 +77,13 @@ let listingApp = createApp({
             let resourceJson = await resourceRes.json();
             this[resource] = resourceJson;
             return resourceJson
+        },
+        createMap(){
+            // Create Map
+
+            // Create regions
+
+            // Create marker clusters
         }
     },
     mounted(){

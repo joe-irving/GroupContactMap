@@ -18,7 +18,7 @@ body {
         box-shadow: 0 0 5px rgba(grey, 0.5);
         position: fixed;
         background-color: white;
-        padding: 10px;
+        padding: 15px;
         .filter {
             display: flex;
             flex-direction: column;
@@ -29,6 +29,25 @@ body {
         position: fixed;
         bottom: 40px;
         left: 40px;
+        .filter-count{
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: aqua;
+            border-radius: 50%;
+            padding: 5px;
+        }
+        input {
+            display: none;
+        }
+        label {
+            display: block;
+            width: 45px;
+            height: 45px;
+            padding: 10px;
+            border-radius: 50%;
+            background-color: red;
+        }
     }
     .toggle-map {
         position: fixed;
@@ -43,11 +62,12 @@ body {
     gap: 10px;
     padding: 10px;
     &.sidebar {
-        max-width: 25vw;
-        position: fixed;
-        top: 0;
-        right: 0;
-        overflow-y: scroll;
+        // max-width: 25vw;
+        // position: fixed;
+        // top: 0;
+        // right: 0;
+        // overflow-y: scroll;
+        display: none;
     }
     .group {
         min-height: 200px;
