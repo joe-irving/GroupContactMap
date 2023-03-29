@@ -1,0 +1,77 @@
+---
+layout: none
+---
+<html>
+    <head>
+        <!-- Vue Scripts -->
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+        <!-- Leaflet -->
+
+        <!-- Leaflet marker cluster -->
+
+        <!-- Styles -->
+        <link rel="stylesheet" href="{{ "/assets/css/style.css" | relative_url }}">
+    </head>
+    <body>
+        {% raw %}
+        <div id="listing-app" class="listing-app">
+            <div class="filters" :class="{ show: showFilters }">
+                <form class="filter-form">
+                    <div class="filter" v-if="filters.region.display">
+                        <label for="regions-filter">Region</label>
+                        <select name="regions" id="regions-filter" default="none" v-model="filters.region.value">
+                            <option></option>
+                            <option :value="region.id"  v-for="region in regions">{{ region.name }}</option>
+                        </select>
+                    </div>
+                    <div class="filter" v-if="filters.region.value && filters.place.display">
+                        <label for="place-filter">Place</label>
+                        <select name="place" id="place-filter"  v-model="filters.place.value">
+                            <option></option>
+                            <option :value="place.id" v-for="place in filteredPlaces">{{ place.name }}</option>
+                        </select>
+                    </div>
+                    <div class="filter" v-if="filters.network.display">
+                        <label for="network-filter">Network</label>
+                        <select name="network" id="network-filter" v-model="filters.network.value">
+                            <option></option>
+                            <option :value="network.id" v-for="network in networks">{{ network.name }}</option>
+                        </select>
+                    </div>
+                    <div class="filter" v-if="filters.target.display">
+                        <label for="target-filter">Target</label>
+                        <select name="target" id="target-filter" v-model="filters.target.value">
+                            <option></option>
+                            <option :value="target.id" v-for="target in targets">{{ target.name }}</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="toggle-filters">
+                <label for="toggle-filter-check">TOGGLE FILTERS</label>
+                <input type="checkbox"id="toggle-filter-check" v-model="showFilters">
+            </div>
+            <div class="toggle-map">
+                <label for="toggle-map-check">TOGGLE MAP</label>
+                <input type="checkbox" id="toggle-map-check" v-model="showMap">
+            </div>
+            <div class="map" v-if="showMap">
+
+            </div>
+            <div class="directory" :class="{ sidebar: showMap }">
+                <div class="group" v-for="group in filteredGroups">
+                    <div class="image" :style="{ 'background-image': group.logo_css}"></div>
+                    <div class="info">
+                        <div class="heading"><h2>{{ group.name }}</h2></div>
+                        <div class="place" v-if="group.place.length > 0"><span v-for="name in group.place_names">{{ name }}</span></div>
+                        <div class="region" v-if="group.region_name">{{ group.region_name }}</div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        {% endraw %}
+    </body>
+    <script src="{{ '/assets/js/listing.js' | relative_url }}"></script>
+</html>

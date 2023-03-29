@@ -1,0 +1,26 @@
+---
+---
+[{% for place in site.data.places %}
+{% assign region = place.region | first %}
+{
+    "name": "{{ place.name | strip }}",
+    "region": "{{ region.airtable_id }}",
+    "type": "{{ place.type }}",
+    "id": "{{ place.airtable_id }}",
+    "center": {
+        "latitude": "{{ place.latitude }}",
+        "longitude": "{{ place.longitude }}"
+    },
+    "min_point": {
+        "latitude": "{{ place.min_latitude }}",
+        "longitude": "{{ place.min_longitude }}"
+    },
+    "max_point": {
+        "latitude": "{{ place.max_latitude }}",
+        "longitude": "{{ place.max_longitude }}"
+    },
+    "groups": {{ place.groups | map: "airtable_id" | jsonify }}
+}
+
+{% unless forloop.last %},{% endunless %}
+{% endfor %}]

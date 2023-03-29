@@ -1,0 +1,7 @@
+---
+---
+[{% for network in site.data.networks %}{
+    "name": "{{ network.name | strip }}",
+    "website": "{{ network.website | strip }}",
+    "id": "{{ network.airtable_id | strip }}"
+}{% unless forloop.last %},{% endunless %}{% endfor %}]

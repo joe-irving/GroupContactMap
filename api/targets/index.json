@@ -1,0 +1,7 @@
+---
+---
+[{% for target in site.data.targets %}{
+    "name": "{{ target.name | strip }}",
+    "type": "{{ target.type }}",
+    "id": "{{ target.airtable_id | strip }}"
+}{% unless forloop.last %},{% endunless %}{% endfor %}]
