@@ -1,24 +1,56 @@
+$background-color: white;
+$font-color: black;
+
+$sidebar-width: 300px;
+
 body {
     font-family: sans-serif;
+    color: $font-color;
     margin: 0;
     padding: 0;
 }
 
 .listing-app {
-    // display: grid;
-    // grid-template-columns: 1fr 4fr;
+    .listing-content {
+        display: grid;
+        grid-template-columns: $sidebar-width*2/3 1fr $sidebar-width;
+        grid-template-rows: 100vh;
+        .filter {
+            grid-row-start: 1;
+            grid-row-end: 2;
+            grid-column-start: 1;
+            grid-column-end: 2;
+        }
+        .directory-container {
+            grid-row: 1 / span 1;
+            grid-column: 2 / span 2;
+            overflow-y: scroll;
+            z-index: 2;
+            &.sidebar {
+                grid-column: 3 / span 1;
+            }
+        }
+        .map-section {
+            grid-column: 2 / span 2;
+            grid-row: 1 / span 1;
+            z-index: 1;
+            &.hide {
+                z-index: -1;
+                visibility: hidden;
+            }
+        }
+    }
     .filters {
         &.show{
             display: block;
         }
         &:not(.show){
             display: none;
-        }
-        height: 100vh;
+        }   
         box-shadow: 0 0 5px rgba(grey, 0.5);
-        position: fixed;
         background-color: white;
         padding: 15px;
+        // z-index: 1;
         .filter {
             display: flex;
             flex-direction: column;
@@ -29,6 +61,7 @@ body {
         position: fixed;
         bottom: 40px;
         left: 40px;
+        z-index: 100;
         .filter-count{
             position: absolute;
             top: 0;
@@ -53,6 +86,14 @@ body {
         position: fixed;
         bottom: 40px;
         right: 40px;
+        z-index: 100;
+    }
+
+    .map {
+        height: 100vh;
+        path.leaflet-interactive:hover {
+            fill-opacity: 0.5;
+        }
     }
 }
 
@@ -61,18 +102,17 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 10px;
     padding: 10px;
-    &.sidebar {
-        // max-width: 25vw;
-        // position: fixed;
-        // top: 0;
-        // right: 0;
-        // overflow-y: scroll;
-        display: none;
+
+    .group-link {
+        text-decoration: none;
+        color: $font-color;
     }
+    
     .group {
-        min-height: 200px;
+        background-color: $background-color;
         border-radius: 5px;
         box-shadow: 0 0 5px 0 rgba(grey, 0.5);
+        overflow-x: hidden;
         &:hover {
             box-shadow: 0 0 9px 0 rgba(grey, 0.5);
         }

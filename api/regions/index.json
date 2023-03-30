@@ -4,7 +4,8 @@
 {
     "name": "{{ region.region_or_nation }}",
     "id": "{{ region.airtable_id }}",
-    "geojson": "{{ region.geo_json }}"
+    "geojson": "{{ region.geo_json }}",
+    "feature": {{ region.feature | default: "null" }}
 }
 {% unless forloop.last %},{% endunless %}
 {% endfor %}]

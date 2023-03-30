@@ -2,6 +2,7 @@
 ---
 [{% for group in site.groups %}
 {% assign image = group['group_logo_/_image']  %}
+{% assign place = group.city_linked | first %}
 {
     "name": "{{ group.group_name | strip }}",
     "website": "{{ group.website | strip }}",
@@ -9,13 +10,15 @@
     "instagram": "{{ group.instagram | strip }}",
     "logo": "{{ image }}",
     "logo_css": "url('{{ image }}')",
+    "latlng": {% if place.latitude and  place.longitude %}[{{ place.latitude }},{{ place.longitude }}]{% else %}null{% endif %},
     "region": {{ group.region | map: 'airtable_id' | jsonify }},
     "region_name": "{{ group.region | map: 'region_or_nation' | first }}",
     "place": {{ group.city_linked | map: 'airtable_id' | jsonify }},
     "place_names": {{ group.city_linked | map: 'name' | jsonify }},
     "target": {{ group["campaigns/targets"]  | map: 'airtable_id' | jsonify }},
     "network": {{ group["network_affiliations"]  | map: 'airtable_id' | jsonify }},
-    "id": "{{ group.airtable_id }}"
+    "id": "{{ group.airtable_id }}",
+    "contact": "{{ group.website | default: group.twitter | default: group.instagram | strip }}"
 }
 
 {% unless forloop.last %},{% endunless %}

@@ -7,10 +7,7 @@
     "region": "{{ region.airtable_id }}",
     "type": "{{ place.type }}",
     "id": "{{ place.airtable_id }}",
-    "center": {
-        "latitude": "{{ place.latitude }}",
-        "longitude": "{{ place.longitude }}"
-    },
+    "center": {% if place.latitude and  place.longitude %}[{{ place.latitude }},{{ place.longitude }}]{% else %}null{% endif %},
     "min_point": {
         "latitude": "{{ place.min_latitude }}",
         "longitude": "{{ place.min_longitude }}"

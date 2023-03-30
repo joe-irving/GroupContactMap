@@ -50,7 +50,7 @@ airtable:
   regions:
     app: ENV_AIRTABLE_BASE_ID
     table: ENV_AIRTABLE_TABLE_REGIONS
-    view: viwLYRerER78kHPGG
+    view: viwgChlXgcaGKhH5u
     fields:
       - Region or Nation
       - GeoJSON

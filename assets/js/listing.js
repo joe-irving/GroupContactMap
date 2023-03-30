@@ -26,8 +26,10 @@ let listingApp = createApp({
                     "display": true
                 }
             },
-            showMap: false,
-            showFilters: true
+            showMap: true,
+            showFilters: true,
+            groupMap: {},
+            groupMarkers: null
         }
     },
     computed: {
@@ -35,10 +37,10 @@ let listingApp = createApp({
             let groups = this.groups;
             for (filterName of Object.keys(this.filters)){
                 let filter = this.filters[filterName]
-                console.log(filter)
-                if (!filter.value){ continue; }
-
-                console.log("filtering on "+ filterName)
+                if (!filter.value){
+                    if (filterName == "region") { this.filters.place.value = null}
+                    continue;
+                }
 
                 groups = groups.filter(function(group){
                     if (Array.isArray(group[filterName])){
@@ -49,10 +51,10 @@ let listingApp = createApp({
                     
                 })
             }
-
             return groups;
         },
         filteredPlaces(){
+            
             let places = this.places
             if (!this.filters.region.value){
                 return places;
@@ -76,21 +78,76 @@ let listingApp = createApp({
             let resourceRes = await fetch('/api/'+resource+'/index.json');
             let resourceJson = await resourceRes.json();
             this[resource] = resourceJson;
+            this.updateMapPoints();
             return resourceJson
         },
         createMap(){
             // Create Map
+            this.groupMap = L.map("group-map").setView([51.505, -0.09], 5);
 
-            // Create regions
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(this.groupMap);
+            
 
             // Create marker clusters
+            //this.updateMapPoints();
+        },
+        addMapRegions() {
+            // Create regions
+            for (region of this.regions){
+                L.geoJSON(region.feature, {
+                    style:  {
+                        "weight": 2,
+                        "opacity": 0.65
+                    }
+                }).addTo(
+                    this.groupMap
+                ).on(
+                    'click', this.regionClicked
+                ).airtableID = region.id
+            }
+            // this.updateMapPoints();
+        },
+        regionClicked(e) {
+            this.filters.region.value = e.target.airtableID;
+
+            this.groupMap.fitBounds((e.target.getBounds()));
+
+            this.updateMapPoints();
+        },
+        updateMapPoints() {
+            if (!this.showMap){ return;}
+            if (!this.groupMarkers){
+                this.groupMarkers = L.markerClusterGroup({
+                    maxClusterRadius: 20,
+                  }).addTo(this.groupMap)
+            }
+            this.groupMarkers.clearLayers()
+            
+            this.filteredGroups.forEach((group) => {
+                if (group.place.length > 0){
+                    let placeId = group.place[0];
+                    let placeOptions = this.places.filter((place) => place.id == placeId)
+                    if (placeOptions.length == 0){ return; }
+                    if (!placeOptions[0].center){ return; }
+
+                    let marker = L.marker(placeOptions[0].center).bindPopup(group.name);
+                    this.groupMarkers.addLayer(marker)
+                }
+                
+            })
         }
     },
     mounted(){
         this.loadResource('groups');
-        this.loadResource('regions');
+        this.loadResource('regions').then(() => {
+            this.addMapRegions();
+        });
         this.loadResource('places');
         this.loadResource('targets');
         this.loadResource('networks');
+        this.createMap();
     }
 }).mount('#listing-app');

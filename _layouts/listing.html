@@ -9,8 +9,17 @@ layout: none
         <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 
         <!-- Leaflet -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+        integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+        crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+        integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+        crossorigin=""></script>
 
         <!-- Leaflet marker cluster -->
+        <link rel="stylesheet" href="/assets/css/MarkerCluster.Default.css">
+        <link rel="stylesheet" href="/assets/css/MarkerCluster.css">
+        <script src="/assets/js/leaflet.markercluster-src.js"></script>
 
         <!-- Styles -->
         <link rel="stylesheet" href="{{ "/assets/css/style.css" | relative_url }}">
@@ -18,39 +27,60 @@ layout: none
     <body>
         {% raw %}
         <div id="listing-app" class="listing-app">
-            <div class="filters" :class="{ show: showFilters }">
-                <form class="filter-form">
-                    <div class="filter" v-if="filters.region.display">
-                        <label for="regions-filter">Region</label>
-                        <select name="regions" id="regions-filter" default="none" v-model="filters.region.value">
-                            <option></option>
-                            <option :value="region.id"  v-for="region in regions">{{ region.name }}</option>
-                        </select>
+            <div class="listing-content" :class="{mapMode: showMap}" >
+                <div class="filters" :class="{ show: showFilters }" @click="updateMapPoints">
+                    <form class="filter-form">
+                        <div class="filter" v-if="filters.region.display">
+                            <label for="regions-filter">Region</label>
+                            <select name="regions" id="regions-filter" default="none" v-model="filters.region.value">
+                                <option></option>
+                                <option :value="region.id"  v-for="region in regions">{{ region.name }}</option>
+                            </select>
+                        </div>
+                        <div class="filter" v-if="filters.region.value && filters.place.display">
+                            <label for="place-filter">Place</label>
+                            <select name="place" id="place-filter"  v-model="filters.place.value">
+                                <option></option>
+                                <option :value="place.id" v-for="place in filteredPlaces">{{ place.name }}</option>
+                            </select>
+                        </div>
+                        <div class="filter" v-if="filters.network.display">
+                            <label for="network-filter">Network</label>
+                            <select name="network" id="network-filter" v-model="filters.network.value">
+                                <option></option>
+                                <option :value="network.id" v-for="network in networks">{{ network.name }}</option>
+                            </select>
+                        </div>
+                        <div class="filter" v-if="filters.target.display">
+                            <label for="target-filter">Target</label>
+                            <select name="target" id="target-filter" v-model="filters.target.value">
+                                <option></option>
+                                <option :value="target.id" v-for="target in targets">{{ target.name }}</option>
+                            </select>
+                        </div>
+                    </form>
+                    <div class="groups-count"><span class="group-number">{{ filteredGroups.length }}</span> group<span v-if="filteredGroups.length != 1">s</span>.</div>
+                </div>
+                <div class="map-section"  :class="{ hide: !showMap }">
+                    <div class="map" id="group-map"></div>
+                </div>
+                <div class="directory-container" :class="{ sidebar: showMap }">
+                    <div class="directory" >
+                        <a class="group-link" :href="group.contact" target="_blank" v-for="group in filteredGroups">
+                            <div class=group>
+                                <div class="image" :style="{ 'background-image': group.logo_css}"></div>
+                                <div class="info">
+                                    <div class="heading"><h2>{{ group.name }}</h2></div>
+                                    <div class="place" v-if="group.place.length > 0"><span v-for="name in group.place_names">{{ name }}</span></div>
+                                    <div class="region" v-if="group.region_name">{{ group.region_name }}</div>
+                                </div>
+                            </div>  
+                        </a>
                     </div>
-                    <div class="filter" v-if="filters.region.value && filters.place.display">
-                        <label for="place-filter">Place</label>
-                        <select name="place" id="place-filter"  v-model="filters.place.value">
-                            <option></option>
-                            <option :value="place.id" v-for="place in filteredPlaces">{{ place.name }}</option>
-                        </select>
-                    </div>
-                    <div class="filter" v-if="filters.network.display">
-                        <label for="network-filter">Network</label>
-                        <select name="network" id="network-filter" v-model="filters.network.value">
-                            <option></option>
-                            <option :value="network.id" v-for="network in networks">{{ network.name }}</option>
-                        </select>
-                    </div>
-                    <div class="filter" v-if="filters.target.display">
-                        <label for="target-filter">Target</label>
-                        <select name="target" id="target-filter" v-model="filters.target.value">
-                            <option></option>
-                            <option :value="target.id" v-for="target in targets">{{ target.name }}</option>
-                        </select>
-                    </div>
-                </form>
-                <div class="groups-count"><span class="group-number">{{ filteredGroups.length }}</span> group<span v-if="filteredGroups.length != 1">s</span>.</div>
+                </div>
+                
             </div>
+            
             <div class="toggle-filters">
                 <label for="toggle-filter-check">
                     <svg viewBox="0 0 971.986 971.986" style="enable-background:new 0 0 971.986 971.986;">
@@ -65,20 +95,6 @@ layout: none
                 <label for="toggle-map-check">TOGGLE MAP</label>
                 <input type="checkbox" id="toggle-map-check" v-model="showMap">
             </div>
-            <div class="map" v-if="showMap">
-                MAP!
-            </div>
-            <div class="directory" :class="{ sidebar: showMap }">
-                <div class="group" v-for="group in filteredGroups">
-                    <div class="image" :style="{ 'background-image': group.logo_css}"></div>
-                    <div class="info">
-                        <div class="heading"><h2>{{ group.name }}</h2></div>
-                        <div class="place" v-if="group.place.length > 0"><span v-for="name in group.place_names">{{ name }}</span></div>
-                        <div class="region" v-if="group.region_name">{{ group.region_name }}</div>
-                    </div>
-                </div>
-            </div>
-            
         </div>
         {% endraw %}
     </body>
