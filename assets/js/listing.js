@@ -27,7 +27,7 @@ let listingApp = createApp({
                 }
             },
             showMap: false,
-            showFilters: true,
+            showFilters: false,
             groupMap: {},
             groupMarkers: null,
             postcode: "",
@@ -208,6 +208,11 @@ let listingApp = createApp({
             places.sort((p1, p2) => p1.distance - p2.distance);
             this.postcodePlace = places[0];
             console.log(places[0]);
+        },
+        hideFilters(e) {
+            if (!e.target.closest(".filters")){
+                this.showFilters = false;
+            }
         }
     },
     mounted(){

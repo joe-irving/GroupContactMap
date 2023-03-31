@@ -13,32 +13,48 @@ body {
 .listing-app {
     .listing-content {
         display: grid;
-        grid-template-columns: $sidebar-width*2/3 1fr $sidebar-width;
-        grid-template-rows: 100vh;
-        .filter {
-            grid-row-start: 1;
-            grid-row-end: 2;
-            grid-column-start: 1;
-            grid-column-end: 2;
+        // grid-template-columns: min(50px, 1fr) min($sidebar-width, 2fr) 3fr min($sidebar-width, 2fr) min(50px, 1fr);
+        grid-template-columns: 1fr 2fr 5fr 2fr 1fr;
+        grid-template-rows: 1fr 2fr 5fr 2fr 1fr;
+        max-height: 100vh;
+        .toggle-filters {
+            grid-row: 1 / span 1;
+            grid-column: 1 / span 1;
+            z-index: 100;
+        }
+        .filters {
+            grid-row: 1 / span 2;
+            grid-column: 1 / span 2;
+            z-index: 101;
+        }
+        .postcode-lookup-form {
+            grid-row: 1 / span 1;
+            grid-column: 2 / span 3;
+        }
+        .toggle-map {
+            grid-row: 1 / span 1;
+            grid-column: 5 / span 1;
         }
         .directory-container {
-            grid-row: 1 / span 1;
-            grid-column: 2 / span 2;
+            grid-row: 2 / span 4;
+            grid-column: 1 / span 5;
             overflow-y: scroll;
             z-index: 2;
             &.sidebar {
-                grid-column: 3 / span 1;
+                grid-column: 4 / span 2;
+                grid-row: 1 / span 5;
             }
         }
         .map-section {
-            grid-column: 2 / span 2;
-            grid-row: 1 / span 1;
+            grid-column: 1 / span 5;
+            grid-row: 1 / span 5;
             z-index: 1;
             &.hide {
                 z-index: -1;
                 visibility: hidden;
             }
         }
+        
     }
     .filters {
         &.show{
@@ -49,19 +65,17 @@ body {
         }   
         box-shadow: 0 0 5px rgba(grey, 0.5);
         background-color: white;
-        padding: 15px;
         // z-index: 1;
         .filter {
             display: flex;
             flex-direction: column;
-            padding: 10px 0;
         }
     }
     .toggle-filters {
-        position: fixed;
-        bottom: 40px;
-        left: 40px;
-        z-index: 100;
+        // position: fixed;
+        // bottom: 40px;
+        // left: 40px;
+        // z-index: 100;
         .filter-count{
             position: absolute;
             top: 0;
@@ -83,10 +97,10 @@ body {
         }
     }
     .toggle-map {
-        position: fixed;
-        bottom: 40px;
-        right: 40px;
-        z-index: 100;
+        // position: fixed;
+        // bottom: 40px;
+        // right: 40px;
+        // z-index: 100;
     }
 
     .map {
