@@ -65,16 +65,36 @@ layout: none
                     <div class="map" id="group-map"></div>
                 </div>
                 <div class="directory-container" :class="{ sidebar: showMap }">
-                    <div class="directory" >
+                    <div class="postcode-lookup-form" v-if="!showMap">
+                        <input type="text" placeholder="Enter your postcode" v-model="postcode" @keyup="postcodeSearch">
+                    </div>
+                    <div class="postcode-directory"  v-if="postcodePlace">
+                        <h1>{{ postcodePlace.name }}</h1>
+                        <div class="directory">
+                            <a class="group-link" :href="group.contact" target="_blank" v-for="group in postcodeGroups.place">
+                                {% endraw %}{% include vue/directory-item.html %}{% raw %}
+                            </a>
+                        </div>
+
+                        <h1>{{ postcodeRegion.name }}</h1>
+                        <div class="directory">
+                            <a class="group-link" :href="group.contact" target="_blank" v-for="group in postcodeGroups.region">
+                                {% endraw %}{% include vue/directory-item.html %}{% raw %}
+                            </a>
+                        </div>
+
+                        <h1>Country Wide</h1>
+                        <div class="directory">
+                            <a class="group-link" :href="group.contact" target="_blank" v-for="group in postcodeGroups.country">
+                                {% endraw %}{% include vue/directory-item.html %}{% raw %}
+                            </a>
+                        </div>
+
+
+                    </div>
+                    <div class="directory" v-if="!postcodePlace">
                         <a class="group-link" :href="group.contact" target="_blank" v-for="group in filteredGroups">
-                            <div class=group>
-                                <div class="image" :style="{ 'background-image': group.logo_css}"></div>
-                                <div class="info">
-                                    <div class="heading"><h2>{{ group.name }}</h2></div>
-                                    <div class="place" v-if="group.place.length > 0"><span v-for="name in group.place_names">{{ name }}</span></div>
-                                    <div class="region" v-if="group.region_name">{{ group.region_name }}</div>
-                                </div>
-                            </div>  
+                            {% endraw %}{% include vue/directory-item.html %}{% raw %}
                         </a>
                     </div>
                 </div>

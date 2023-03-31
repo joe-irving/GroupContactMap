@@ -117,6 +117,7 @@ body {
             box-shadow: 0 0 9px 0 rgba(grey, 0.5);
         }
         transition: 300ms;
+        height: 100%;
         .image {
             height: 120px;
             width: 100%;
@@ -126,5 +127,31 @@ body {
         .info {
             padding: 10px;
         }
+    }
+}
+
+.postcode-directory {
+    h1 {
+        text-align: center;
+    }
+}
+
+.postcode-lookup-form {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    input {
+        font-size: 24px;
+        padding: 15px;
+        font-family: monospace;
+        text-transform: uppercase;
+        border: 1px solid $font-color;
+        border-radius: 0;
+        text-align: center;
+        &:focus {
+            box-shadow: 0 0 5px rgba(grey, 0.8);
+            outline: none;
+        }
+        
     }
 }

@@ -26,10 +26,12 @@ let listingApp = createApp({
                     "display": true
                 }
             },
-            showMap: true,
+            showMap: false,
             showFilters: true,
             groupMap: {},
-            groupMarkers: null
+            groupMarkers: null,
+            postcode: "",
+            postcodePlace: null
         }
     },
     computed: {
@@ -48,7 +50,6 @@ let listingApp = createApp({
                     }else{
                         return group[filterName] == filter.value;
                     }
-                    
                 })
             }
             return groups;
@@ -71,6 +72,39 @@ let listingApp = createApp({
                 }
             }
             return filterCount;
+        },
+        postcodeGroups(){
+            if (!this.postcodePlace){
+                return {
+                    place: [],
+                    region: [],
+                    country: [],
+                };
+            }
+            return {
+                place: this.filteredGroups.filter((group) => group.place.includes(this.postcodePlace.id)),
+                region: this.filteredGroups.filter((group) => (group.region.includes(this.postcodePlace.region) && group.place.length === 0)),
+                country: this.countryWideGroups
+            }
+        },
+        countryWideGroups(){
+            return this.filteredGroups.filter((group) => {
+                if (group.region.length == 0){
+                    return true;
+                }
+                return !group.region[0]
+
+            }); 
+            // return this.filteredGroups.filter((group) => (group.place.length == 0 && (group.region.length == 0 || group.region.includes("recsV4CShKwK5DxhL"))));
+        },
+        postcodeRegion(){
+            if (!this.postcodePlace){
+                return null;
+            }
+            let regions = this.regions.filter((region) => region.id === this.postcodePlace.region)
+            if (regions.length > 0){
+                return regions[0]
+            }
         }
     },
     methods: {
@@ -136,8 +170,44 @@ let listingApp = createApp({
                     let marker = L.marker(placeOptions[0].center).bindPopup(group.name);
                     this.groupMarkers.addLayer(marker)
                 }
-                
             })
+        },
+
+        postcodeSearch(){
+            if (this.postcode.length < 2){
+                this.postcodePlace = null;
+                return;
+            }
+            // Search for code
+            fetch("https://api.postcodes.io/postcodes?q="+this.postcode).then((res) => {
+                res.json().then((postcodeData) => {
+                    if (postcodeData.result.length === 0){
+                        this.postcodePlace = null;
+                        return;
+                    }
+                    let postcode = postcodeData.result[0]
+                    // let postcodeLatLng = [postcode.latitude, postcode.longitude]
+
+                    let places = this.places.filter((place) => place.center)
+                    // interate through places & mark distace from point
+                    let processedPlaces = 0;
+                    places.forEach((place, i, places) => {
+                        // if (!place.center) {
+                        //     return;
+                        // }
+                        place.distance = Math.sqrt( (place.center[0]-postcode.latitude)**2 + (place.center[1]-postcode.longitude)**2 );
+                        processedPlaces++;
+                        if (processedPlaces === places.length){
+                            this.postcodeNearestPlace(places)
+                        }
+                    })
+                })
+            })
+        },
+        postcodeNearestPlace(places) {
+            places.sort((p1, p2) => p1.distance - p2.distance);
+            this.postcodePlace = places[0];
+            console.log(places[0]);
         }
     },
     mounted(){
