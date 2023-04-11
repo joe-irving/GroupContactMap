@@ -2,36 +2,54 @@ const { createApp } = Vue;
 
 let listingApp = createApp({
     data() {
+        // Allows for the passing of the following parameters:
+        // * region (airtable ID)
+        // * place (airtable ID)
+        // * network (airtable ID)
+        // * target (airtable ID)
+        // * showMap (pass this to show the map, otherwise leave off to hide it)
+        // * showFilters (pass this to show the fitlers, otherwise leave off to hide them)
+        // * postcode (string)
+        // * mapTitleLayer (for changing map layer)
+        let URLParams = new URLSearchParams(window.location.search);
+        let filters = {
+            "region": {
+                "value": null,
+                "display": true
+            },
+            "place": {
+                "value": null,
+                "display": true
+            },
+            "network": {
+                "value": null,
+                "display": true
+            },
+            "target": {
+                "value": null,
+                "display": true
+            }
+        };
+        let availableFilters = URLParams.has("availableFilters") ? URLParams.get("availableFilters").split(",") : Object.keys(filters);
+        for (key of Object.keys(filters)){
+            filters[key]["value"] = URLParams.get(key);
+            console.log(availableFilters.includes(key))
+            filters[key]["display"] = availableFilters.includes(key);
+        }
         return {
             groups: [],
             regions: [],
             places: [],
             targets: [],
             networks: [],
-            filters: {
-                "region": {
-                    "value": null,
-                    "display": true
-                },
-                "place": {
-                    "value": null,
-                    "display": true
-                },
-                "network": {
-                    "value": null,
-                    "display": true
-                },
-                "target": {
-                    "value": null,
-                    "display": true
-                }
-            },
-            showMap: false,
-            showFilters: false,
+            filters: filters,
+            showMap: URLParams.has("showMap"),
+            showFilters: URLParams.has("showFilters"),
             groupMap: {},
             groupMarkers: null,
-            postcode: "",
-            postcodePlace: null
+            postcode: URLParams.get("postcode") || "",
+            postcodePlace: null,
+            mapTileLayer: URLParams.get("mapTileLayer") || "OpenStreetMap.Mapnik"
         }
     },
     computed: {
@@ -67,7 +85,7 @@ let listingApp = createApp({
         filterCount(){
             let filterCount = 0;
             for (filterName of Object.keys(this.filters)){
-                if (this.filters[filterName].value){
+                if (this.filters[filterName].value && this.filters[filterName].display){
                     filterCount += 1;
                 }
             }
@@ -119,12 +137,7 @@ let listingApp = createApp({
             // Create Map
             this.groupMap = L.map("group-map").setView([51.505, -0.09], 5);
 
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(this.groupMap);
-            
-
+            L.tileLayer.provider(this.mapTileLayer).addTo(this.groupMap);
             // Create marker clusters
             //this.updateMapPoints();
         },
@@ -216,7 +229,9 @@ let listingApp = createApp({
         }
     },
     mounted(){
-        this.loadResource('groups');
+        this.loadResource('groups').then(() => {
+            this.postcodeSearch(); // if postcode passed filter for it
+        });
         this.loadResource('regions').then(() => {
             this.addMapRegions();
         });
