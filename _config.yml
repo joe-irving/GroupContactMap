@@ -31,7 +31,7 @@ airtable:
   groups:
     app: ENV_AIRTABLE_BASE_ID
     table: ENV_AIRTABLE_TABLE_GROUPS
-    view: viwdSq6YX178bEFQv
+    view: viwdSq6YX178bEFQv 
     collection:
       slug: group_name
       layout: none
