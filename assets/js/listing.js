@@ -11,6 +11,7 @@ let listingApp = createApp({
         // * showFilters (pass this to show the fitlers, otherwise leave off to hide them)
         // * postcode (string)
         // * mapTitleLayer (for changing map layer)
+        // * availableFilters (for hiding filter options)
         let URLParams = new URLSearchParams(window.location.search);
         let filters = {
             "region": {
