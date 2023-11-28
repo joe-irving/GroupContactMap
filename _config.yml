@@ -36,6 +36,7 @@ airtable:
       slug: group_name
       layout: none
     fields:
+    # If the field names change on airtable the public will break.
       - Group Name
       - Region
       - City Linked
@@ -45,7 +46,7 @@ airtable:
       - Group Description (public)
       - Group logo / image
       - Network affiliations
-      - FB Group/Page
+      - Facebook
       - Campaigns/Targets
   regions:
     app: ENV_AIRTABLE_BASE_ID
@@ -78,6 +79,7 @@ airtable:
     fields:
       - Name
       - Website
+      - Image
   targets:
     app: ENV_AIRTABLE_BASE_ID
     table: ENV_AIRTABLE_TABLE_TARGETS

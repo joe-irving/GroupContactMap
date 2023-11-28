@@ -34,7 +34,6 @@ let listingApp = createApp({
         let availableFilters = URLParams.has("availableFilters") ? URLParams.get("availableFilters").split(",") : Object.keys(filters);
         for (key of Object.keys(filters)){
             filters[key]["value"] = URLParams.get(key);
-            console.log(availableFilters.includes(key))
             filters[key]["display"] = availableFilters.includes(key);
         }
         return {
@@ -231,6 +230,7 @@ let listingApp = createApp({
     },
     mounted(){
         this.loadResource('groups').then(() => {
+            console.log(this.groups)
             this.postcodeSearch(); // if postcode passed filter for it
         });
         this.loadResource('regions').then(() => {
