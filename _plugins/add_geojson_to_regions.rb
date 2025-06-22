@@ -1,5 +1,7 @@
 require 'net/http'
 
+## This plugin takes the attached files of GeoJSON and turns them into JSON on the region data in jekyll
+
 module AddGeojsonFeatures
     class Generator < ::Jekyll::Generator
         def generate(site)

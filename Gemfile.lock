@@ -1,5 +1,5 @@
 GIT
-  remote: https://github.com/tippingpointuk/jekyll-airtable-import/
+  remote: https://github.com/tippingpointuk/jekyll-airtable-import
   revision: c3ccc6e3b1420a66746d02a8a19c125419191181
   branch: ruby-3.2.2-
   specs:
@@ -13,7 +13,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (6.1.7.6)
+    activesupport (6.1.7.10)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -23,8 +23,10 @@ GEM
       public_suffix (>= 2.0.2, < 6.0)
     airtable (0.0.9)
       httparty
+    bigdecimal (3.2.2)
     colorator (1.1.0)
     concurrent-ruby (1.2.2)
+    csv (3.3.5)
     dotenv (2.8.1)
     em-websocket (0.5.3)
       eventmachine (>= 0.12.9)
@@ -33,7 +35,8 @@ GEM
     ffi (1.15.5)
     forwardable-extended (2.6.0)
     http_parser.rb (0.8.0)
-    httparty (0.21.0)
+    httparty (0.23.1)
+      csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
     i18n (1.14.1)
@@ -75,8 +78,9 @@ GEM
       jekyll (>= 3.5, < 5.0)
       jekyll-feed (~> 0.9)
       jekyll-seo-tag (~> 2.1)
-    minitest (5.20.0)
-    multi_xml (0.6.0)
+    minitest (5.25.5)
+    multi_xml (0.7.2)
+      bigdecimal (~> 3.1)
     pathutil (0.16.2)
       forwardable-extended (~> 2.6)
     public_suffix (5.0.3)
@@ -95,7 +99,7 @@ GEM
       concurrent-ruby (~> 1.0)
     unicode-display_width (1.8.0)
     webrick (1.8.1)
-    zeitwerk (2.6.12)
+    zeitwerk (2.7.3)
 
 PLATFORMS
   x86_64-linux
@@ -111,4 +115,4 @@ DEPENDENCIES
   webrick (~> 1.8)
 
 BUNDLED WITH
-   2.2.21
+   2.4.20
